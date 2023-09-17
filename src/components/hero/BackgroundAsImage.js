@@ -77,11 +77,11 @@ export default () => {
         <StyledHeader links={navLinks} />
         <TwoColumn>
           <LeftColumn>
-            <Notification>We have now launched operations in Europe.</Notification>
+            <Notification>Your Partner in Protecting Digital Assets.</Notification>
             <Heading>
-              <span>Hire the best</span>
+              {/* <span>Hire the best</span> */}
               <br />
-              <SlantedBackground>Marketing Team.</SlantedBackground>
+              <SlantedBackground>Cybersecurity Solutions.</SlantedBackground>
             </Heading>
             {/* <PrimaryAction>Read Customer Stories</PrimaryAction> */}
           </LeftColumn>

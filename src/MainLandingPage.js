@@ -20,7 +20,7 @@ export default () => (
     <Hero />
     {/* <MainFeature /> */}
     <Features />
-    <MainFeature2 />
+    {/* <MainFeature2 /> */}
     {/* <Portfolio /> */}
     {/* <Testimonial
       subheading="Testimonials"

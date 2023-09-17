@@ -36,7 +36,7 @@ export default () => {
         <Row>
           <LogoContainer>
             <LogoImg src={logo} />
-            <LogoText>Treact</LogoText>
+            <LogoText>Cyber Inc</LogoText>
           </LogoContainer>
           <LinksContainer>
             <Link href="/">Home</Link>
@@ -55,7 +55,7 @@ export default () => {
             </SocialLink>
           </SocialLinksContainer>
           <CopyrightText>
-            &copy; Copyright 2020, Treact Inc. All Rights Reserved.
+            &copy; Copyright 2020, Cyber Inc. All Rights Reserved.
           </CopyrightText>
         </Row>
       </Content>
