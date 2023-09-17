@@ -17,7 +17,7 @@ export default () => {
     <AnimationRevealPage>
       <Header />
       <ContactUsForm />
-      <ContactDetails
+      {/* <ContactDetails
         cards={[
           {
             title: "New York",
@@ -98,7 +98,7 @@ export default () => {
             )
           }
         ]}
-      />
+      /> */}
       <Footer />
     </AnimationRevealPage>
   );
