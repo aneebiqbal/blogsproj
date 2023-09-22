@@ -1,13 +1,17 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-import {css} from "styled-components/macro"; //eslint-disable-line
-import { SectionHeading as HeadingTitle, Subheading } from "components/misc/Headings.js";
+import { css } from "styled-components/macro"; //eslint-disable-line
+import {
+  SectionHeading as HeadingTitle,
+  Subheading,
+} from "components/misc/Headings.js";
 import { PrimaryButton as PrimaryButtonBase } from "components/misc/Buttons.js";
 import { ReactComponent as UserIcon } from "feather-icons/dist/icons/user.svg";
 import { ReactComponent as TagIcon } from "feather-icons/dist/icons/tag.svg";
 import { ReactComponent as SvgDecoratorBlob1 } from "../../images/svg-decorator-blob-1.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "../../images/svg-decorator-blob-3.svg";
+// const DOMPurify = require("dompurify");
 
 const Container = tw.div`relative`;
 const Content = tw.div`max-w-screen-xl mx-auto py-20 lg:py-24`;
@@ -18,9 +22,9 @@ const HeadingInfoContainer = tw.div`flex flex-col items-center`;
 const HeadingDescription = tw.p`mt-4 font-medium text-gray-600 text-center max-w-sm`;
 
 const Card = tw.div`lg:mx-4 xl:mx-8 max-w-sm flex flex-col h-full`;
-const Image = styled.div(props => [
+const Image = styled.div((props) => [
   `background-image: url("${props.imageSrc}");`,
-  tw`bg-cover bg-center h-80 lg:h-64 rounded rounded-b-none`
+  tw`bg-cover bg-center h-80 lg:h-64 rounded rounded-b-none`,
 ]);
 
 const Details = tw.div`p-6 rounded border-2 border-t-0 rounded-t-none border-dashed border-primary-100 flex-1 flex flex-col items-center text-center lg:block lg:text-left`;
@@ -34,9 +38,9 @@ const Meta = styled.div`
 
 const Title = tw.h5`mt-4 leading-snug font-bold text-lg`;
 const Description = tw.p`mt-2 text-sm text-secondary-100`;
-const Link = styled(PrimaryButtonBase).attrs({as: "a"})`
+const Link = styled(PrimaryButtonBase).attrs({ as: "a" })`
   ${tw`inline-block mt-4 text-sm font-semibold`}
-`
+`;
 
 const DecoratorBlob1 = tw(
   SvgDecoratorBlob1
@@ -47,9 +51,12 @@ const DecoratorBlob2 = tw(
 
 export default ({
   subheading = "Blog",
-  heading = <>We Love <span tw="text-primary-500">Writing.</span></>,
+  heading = (
+    <>
+      We Love <span tw="text-primary-500">Writing.</span>
+    </>
+  ),
   description = "Some amazing blog posts that are written by even more amazing people.",
-
 }) => {
   const blogPosts = [
     {
@@ -58,28 +65,50 @@ export default ({
       author: "Adam Wathan",
       category: "SEO",
       title: "Optimizing your website for your main keyword",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      url: "https://reddit.com"
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      url: "https://reddit.com",
     },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1479660095429-2cf4e1360472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-      author: "Owais Khan",
-      category: "Advertising",
-      title: "Creating The perfect advertisement campaign",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      url: "https://timerse.com"
-    },
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1579869847514-7c1a19d2d2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-      author: "Steve Schoger",
-      category: "Social Media",
-      title: "Efficient management of your social media assets",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      url: "https://timerse.com"
-    }
+    //   {
+    //     imageSrc:
+    //       "https://images.unsplash.com/photo-1479660095429-2cf4e1360472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
+    //     author: "Owais Khan",
+    //     category: "Advertising",
+    //     title: "Creating The perfect advertisement campaign",
+    //     description:
+    //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    //     url: "https://timerse.com",
+    //   },
+    //   {
+    //     imageSrc:
+    //       "https://images.unsplash.com/photo-1579869847514-7c1a19d2d2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    //     author: "Steve Schoger",
+    //     category: "Social Media",
+    //     title: "Efficient management of your social media assets",
+    //     description:
+    //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    //     url: "https://timerse.com",
+    //   },
   ];
+  const rssFeedUrl =
+    "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
+
+  // Fetch the RSS feed data
+  fetch(rssFeedUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      // Handle the fetched data here
+      const blogPosts = data.items;
+      // const textWithoutHtml = DOMPurify.sanitize(blogPosts, {
+      //   ALLOWED_TAGS: [],
+      // });
+
+      console.log(blogPosts);
+    })
+    .catch((error) => {
+      console.error("Error fetching RSS feed:", error);
+    });
+
   return (
     <Container>
       <Content>
