@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
@@ -58,7 +58,9 @@ export default ({
   ),
   description = "Some amazing blog posts that are written by even more amazing people.",
 }) => {
-  const blogPosts = [
+  const [blogs, setBlogs] = useState([]);
+
+  const blogblogPosts = [
     {
       imageSrc:
         "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
@@ -90,6 +92,7 @@ export default ({
     //     url: "https://timerse.com",
     //   },
   ];
+
   const rssFeedUrl =
     "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
 
@@ -98,17 +101,17 @@ export default ({
     .then((response) => response.json())
     .then((data) => {
       // Handle the fetched data here
-      const blogPosts = data.items;
+      const blog = data.items;
       // const textWithoutHtml = DOMPurify.sanitize(blogPosts, {
       //   ALLOWED_TAGS: [],
+      setBlogs(data.items);
+
       // });
 
-      console.log(blogPosts);
     })
     .catch((error) => {
       console.error("Error fetching RSS feed:", error);
     });
-
   return (
     <Container>
       <Content>
@@ -118,7 +121,7 @@ export default ({
           <HeadingDescription>{description}</HeadingDescription>
         </HeadingInfoContainer>
         <ThreeColumn>
-          {blogPosts.map((post, index) => (
+          {blogs.map((post, index) => (
             <Column key={index}>
               <Card>
                 <Image imageSrc={post.imageSrc} />
