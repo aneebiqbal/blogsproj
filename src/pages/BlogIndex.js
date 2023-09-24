@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AnimationRevealPage from "helpers/AnimationRevealPage.js";
 import { Container, ContentWithPaddingXl } from "components/misc/Layouts";
 import tw from "twin.macro";
@@ -8,6 +8,8 @@ import Header from "components/headers/light.js";
 import Footer from "components/footers/FiveColumnWithInputForm.js";
 import { SectionHeading } from "components/misc/Headings";
 import { PrimaryButton } from "components/misc/Buttons";
+import EmptyImage from '../images/empty-image.png'
+import { Link } from "react-router-dom";
 
 const HeadingRow = tw.div`flex`;
 const Heading = tw(SectionHeading)`text-gray-900`;
@@ -35,7 +37,7 @@ const PostContainer = styled.div`
 const Post = tw.div`cursor-pointer flex flex-col bg-gray-100 rounded-lg`;
 const Image = styled.div`
   ${props => css`background-image: url("${props.imageSrc}");`}
-  ${tw`h-64 w-full bg-cover bg-center rounded-t-lg`}
+  ${tw`h-64 w-full bg-cover rounded-t-lg`}
 `;
 const Info = tw.div`p-8 border-2 border-t-0 rounded-lg rounded-t-none`;
 const Category = tw.div`uppercase text-primary-500 text-xs font-bold tracking-widest leading-loose after:content after:block after:border-b-2 after:border-primary-500 after:w-8`;
@@ -48,42 +50,88 @@ const LoadMoreButton = tw(PrimaryButton)`mt-16 mx-auto`;
 
 export default ({
   headingText = "Blog Posts",
-  posts = [
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1499678329028-101435549a4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1024&q=80",
-      category: "Travel Tips",
-      date: "April 21, 2020",
-      title: "Safely Travel in Foreign Countries",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      url: "https://timerse.com",
-      featured: true
-    },
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost(),
-    getPlaceholderPost()
-  ]
 }) => {
+
+  const [posts, setPosts] = useState([]);
   const [visible, setVisible] = useState(7);
   const onLoadMoreClick = () => {
     setVisible(v => v + 6);
   };
+
+  useEffect(() => {
+    const rssFeedUrl =
+      "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
+
+    // Fetch the RSS feed data
+    fetch(rssFeedUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the fetched data here
+        setPosts(data.items.map((post, index) => {
+          // Parse the HTML string for each post
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(post.content, 'text/html');
+          const content = doc.querySelector('p').textContent;
+          const imgSrc = doc.querySelector('img').getAttribute('src');
+
+          const isFeatured = index === 0;
+          return {
+            ...post,
+            content,
+            imgSrc,
+            isFeatured
+          };
+        }).sort((a, b) => {
+          // Convert the pubDate strings to Date objects for comparison
+          const dateA = new Date(a.pubDate);
+          const dateB = new Date(b.pubDate);
+
+          // Sort in descending order (most recent first)
+          return dateB - dateA;
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching RSS feed:", error);
+      });
+  }, []);
+
+  const validImage = (str) => {
+    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"]; // Add more extensions if needed
+    return imageExtensions.some((ext) => str?.endsWith(ext));
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (dateTimeString) {
+      return dateTimeString
+        .replace(/-/g, "") // Remove hyphens
+        .replace(/ /g, "") // Remove spaces
+        .replace(/:/g, ""); // Remove colons
+    }
+  }
+
+  const truncateText = (text, length) => {
+    if (text.length <= length) {
+      return text;
+    }
+    return text.slice(0, length) + "...";
+  };
+
+  const formatDate = (date) => {
+    if (date) {
+      const newDate = new Date(date)
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return newDate.toLocaleDateString(undefined, options);
+    }
+  }
+
+  function toTitleCase(str) {
+    if (str) {
+      return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    }
+  }
+
   return (
     <AnimationRevealPage>
       <Header />
@@ -94,16 +142,18 @@ export default ({
           </HeadingRow>
           <Posts>
             {posts.slice(0, visible).map((post, index) => (
-              <PostContainer key={index} featured={post.featured}>
-                <Post className="group" as="a" href={post.url}>
-                  <Image imageSrc={post.imageSrc} />
-                  <Info>
-                    <Category>{post.category}</Category>
-                    <CreationDate>{post.date}</CreationDate>
-                    <Title>{post.title}</Title>
-                    {post.featured && post.description && <Description>{post.description}</Description>}
-                  </Info>
-                </Post>
+              <PostContainer key={index} featured={post?.isFeatured}>
+                <Link to={`/blogs/${formatDateTime(post?.pubDate)}`}>
+                  <Post className="group">
+                    <Image imageSrc={validImage(post?.imgSrc) ? post?.imgSrc : EmptyImage} />
+                    <Info>
+                      <Category>{post?.categories?.length !== 0 ? post?.categories[0] : 'Random'}</Category>
+                      <CreationDate>{formatDate(post?.pubDate)}</CreationDate>
+                      <Title>{post?.title ? toTitleCase(post?.title) : ''}</Title>
+                      {post?.isFeatured && post?.content && <Description>{truncateText(post.content, 300)}</Description>}
+                    </Info>
+                  </Post>
+                </Link>
               </PostContainer>
             ))}
           </Posts>
@@ -118,14 +168,3 @@ export default ({
     </AnimationRevealPage>
   );
 };
-
-const getPlaceholderPost = () => ({
-  imageSrc:
-    "https://images.unsplash.com/photo-1418854982207-12f710b74003?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1024&q=80",
-  category: "Travel Guide",
-  date: "April 19, 2020",
-  title: "Visit the beautiful Alps in Switzerland",
-  description:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-  url: "https://reddit.com"
-});

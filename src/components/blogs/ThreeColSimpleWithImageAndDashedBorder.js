@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import tw from "twin.macro";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { css } from "styled-components/macro"; //eslint-disable-line
 import {
@@ -11,6 +12,8 @@ import { ReactComponent as UserIcon } from "feather-icons/dist/icons/user.svg";
 import { ReactComponent as TagIcon } from "feather-icons/dist/icons/tag.svg";
 import { ReactComponent as SvgDecoratorBlob1 } from "../../images/svg-decorator-blob-1.svg";
 import { ReactComponent as SvgDecoratorBlob2 } from "../../images/svg-decorator-blob-3.svg";
+import { } from "react-router-dom";
+import EmptyImage from '../../images/empty-image.png'
 // const DOMPurify = require("dompurify");
 
 const Container = tw.div`relative`;
@@ -24,7 +27,7 @@ const HeadingDescription = tw.p`mt-4 font-medium text-gray-600 text-center max-w
 const Card = tw.div`lg:mx-4 xl:mx-8 max-w-sm flex flex-col h-full`;
 const Image = styled.div((props) => [
   `background-image: url("${props.imageSrc}");`,
-  tw`bg-cover bg-center h-80 lg:h-64 rounded rounded-b-none`,
+  tw`bg-cover h-80 lg:h-64 rounded rounded-b-none`,
 ]);
 
 const Details = tw.div`p-6 rounded border-2 border-t-0 rounded-t-none border-dashed border-primary-100 flex-1 flex flex-col items-center text-center lg:block lg:text-left`;
@@ -34,12 +37,17 @@ const Meta = styled.div`
   svg {
     ${tw`w-4 h-4 mr-1`}
   }
+  ${props =>
+    props.uppercase &&
+    css`
+      text-transform: uppercase;
+    `}
 `;
 
 const Title = tw.h5`mt-4 leading-snug font-bold text-lg`;
 const Description = tw.p`mt-2 text-sm text-secondary-100`;
-const Link = styled(PrimaryButtonBase).attrs({ as: "a" })`
-  ${tw`inline-block mt-4 text-sm font-semibold`}
+const ReadMoreLink = styled(PrimaryButtonBase)`
+  ${tw`inline-block mt-4 text-sm font-semibold cursor-pointer`}
 `;
 
 const DecoratorBlob1 = tw(
@@ -50,7 +58,7 @@ const DecoratorBlob2 = tw(
 )`-z-10 absolute top-0 left-0 w-48 h-48 transform -translate-x-32 translate-y-full opacity-25`;
 
 export default ({
-  subheading = "Blog",
+  subheading = "Blogs",
   heading = (
     <>
       We Love <span tw="text-primary-500">Writing.</span>
@@ -58,60 +66,102 @@ export default ({
   ),
   description = "Some amazing blog posts that are written by even more amazing people.",
 }) => {
+  const navigate = useNavigate()
   const [blogs, setBlogs] = useState([]);
 
-  const blogblogPosts = [
-    {
-      imageSrc:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-      author: "Adam Wathan",
-      category: "SEO",
-      title: "Optimizing your website for your main keyword",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      url: "https://reddit.com",
-    },
-    //   {
-    //     imageSrc:
-    //       "https://images.unsplash.com/photo-1479660095429-2cf4e1360472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80",
-    //     author: "Owais Khan",
-    //     category: "Advertising",
-    //     title: "Creating The perfect advertisement campaign",
-    //     description:
-    //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //     url: "https://timerse.com",
-    //   },
-    //   {
-    //     imageSrc:
-    //       "https://images.unsplash.com/photo-1579869847514-7c1a19d2d2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-    //     author: "Steve Schoger",
-    //     category: "Social Media",
-    //     title: "Efficient management of your social media assets",
-    //     description:
-    //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //     url: "https://timerse.com",
-    //   },
-  ];
+  // useEffect(() => {
+  //   const rssFeedUrl =
+  //     "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
 
-  const rssFeedUrl =
-    "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
+  //   // Fetch the RSS feed data
+  //   fetch(rssFeedUrl)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // Handle the fetched data here
+  //       setBlogs(data.items.map((post) => {
+  //         // Parse the HTML string for each post
+  //         const parser = new DOMParser();
+  //         const doc = parser.parseFromString(post.content, 'text/html');
+  //         const content = doc.querySelector('p').textContent;
+  //         const imgSrc = doc.querySelector('img').getAttribute('src');
+  //         console.log(post.categories[0])
 
-  // Fetch the RSS feed data
-  fetch(rssFeedUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      // Handle the fetched data here
-      const blog = data.items;
-      // const textWithoutHtml = DOMPurify.sanitize(blogPosts, {
-      //   ALLOWED_TAGS: [],
-      setBlogs(data.items);
+  //         return {
+  //           ...post,
+  //           content,
+  //           imgSrc,
+  //         };
+  //       }));
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching RSS feed:", error);
+  //     });
+  // }, []);
 
-      // });
+  useEffect(() => {
+    const rssFeedUrl =
+      "https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@1aneebiqbal";
 
-    })
-    .catch((error) => {
-      console.error("Error fetching RSS feed:", error);
-    });
+    // Fetch the RSS feed data
+    fetch(rssFeedUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the fetched data here
+        setBlogs(data.items.map((post) => {
+          // Parse the HTML string for each post
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(post.content, 'text/html');
+          const content = doc.querySelector('p').textContent;
+          const imgSrc = doc.querySelector('img').getAttribute('src');
+          return {
+            ...post,
+            content,
+            imgSrc,
+          };
+        }).sort((a, b) => {
+          // Convert the pubDate strings to Date objects for comparison
+          const dateA = new Date(a.pubDate);
+          const dateB = new Date(b.pubDate);
+
+          // Sort in descending order (most recent first)
+          return dateB - dateA;
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching RSS feed:", error);
+      });
+  }, []);
+
+
+  const validImage = (str) => {
+    const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"]; // Add more extensions if needed
+    return imageExtensions.some((ext) => str?.endsWith(ext));
+  };
+
+  const truncateText = (text, length) => {
+    if (text.length <= length) {
+      return text;
+    }
+    return text.slice(0, length) + "...";
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    if (dateTimeString) {
+      return dateTimeString
+        .replace(/-/g, "") // Remove hyphens
+        .replace(/ /g, "") // Remove spaces
+        .replace(/:/g, ""); // Remove colons
+    }
+  }
+
+  function toTitleCase(str) {
+    if (str) {
+      return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    }
+  }
+
   return (
     <Container>
       <Content>
@@ -121,28 +171,31 @@ export default ({
           <HeadingDescription>{description}</HeadingDescription>
         </HeadingInfoContainer>
         <ThreeColumn>
-          {blogs.map((post, index) => (
+          {blogs ? blogs.slice(0, 3).map((post, index) => (
             <Column key={index}>
               <Card>
-                <Image imageSrc={post.imageSrc} />
+                <Image imageSrc={validImage(post?.imgSrc) ? post?.imgSrc : EmptyImage} />
                 <Details>
                   <MetaContainer>
                     <Meta>
                       <UserIcon />
-                      <div>{post.author}</div>
+                      <div>{post?.author}</div>
                     </Meta>
-                    <Meta>
+                    <Meta uppercase>
                       <TagIcon />
-                      <div>{post.category}</div>
+                      <p>{post?.categories?.length !== 0 ? post?.categories[0] : 'Random'}</p>
                     </Meta>
                   </MetaContainer>
-                  <Title>{post.title}</Title>
-                  <Description>{post.description}</Description>
-                  <Link href={post.url}>Read Post</Link>
+                  <Title>{post?.title ? toTitleCase(post?.title) : ''}</Title>
+                  <Description>{truncateText(post?.content, 100)}</Description>
+                  <ReadMoreLink onClick={() => navigate(`/blogs/${formatDateTime(post.pubDate)}`)}>
+                    Read More
+                  </ReadMoreLink>
                 </Details>
               </Card>
             </Column>
-          ))}
+          )) : null}
+
         </ThreeColumn>
       </Content>
       <DecoratorBlob1 />

@@ -1,7 +1,7 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-import {Container as ContainerBase } from "components/misc/Layouts.js"
+import { Container as ContainerBase } from "components/misc/Layouts.js"
 import logo from "../../images/logo-full.png";
 import { ReactComponent as FacebookIcon } from "../../images/facebook-icon.svg";
 import { ReactComponent as TwitterIcon } from "../../images/twitter-icon.svg";
@@ -41,7 +41,7 @@ export default () => {
           <LinksContainer>
             <Link href="/">Home</Link>
             <Link href="/contact-us">Contact Us</Link>
-            <Link href="/blog">Blog</Link>
+            <Link href="/blogs">Blog</Link>
           </LinksContainer>
           <SocialLinksContainer>
             <SocialLink href="https://facebook.com">
