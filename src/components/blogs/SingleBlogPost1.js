@@ -23,6 +23,21 @@ const Image = styled.div`
   border-bottom: none; /* Remove border bottom */
 `;
 
+
+const SecImage = styled.div`
+  ${props => css`
+    background-image: url("${props.imageSrc}");
+    height: 400px !important; // Adjust the height as needed
+    width: 500px !important;
+    border: none !important; // Adjust the height as needed
+  `}
+  ${tw`w-full bg-cover bg-center rounded-lg rounded-b-none`}
+  border: none; /* Remove border bottom */
+`;
+
+const SecImageContainer = styled.div`
+  ${tw`w-full h-full flex justify-center items-center py-4 mt-2`}
+`;
 const Info = styled.div`
   ${props => css`
     border-top: none !important; // Adjust the height as needed
@@ -48,13 +63,39 @@ export default function SingleBlogPost1() {
             .then((data) => {
                 const requiredPost = data.items.find(post => formatDateTime(post.pubDate) === id)
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(requiredPost.content, 'text/html');
-                const content = doc.querySelector('p').textContent;
+                const doc = parser.parseFromString(requiredPost.description, 'text/html');
+                // const content = doc.querySelector('p').textContent;
+                // const paragraphs = Array.from(
+                //     doc.querySelectorAll("p, h3")
+                // ).map((element) => ({
+                //     type: element.tagName.toLowerCase(), // 'p' or 'h3'
+                //     content: element.textContent,
+                // }));
+
+                let paragraphs = []
+                let firstImageProcessed = false;
+
+                const contentElements = Array.from(doc.querySelectorAll("p, h3, figure"));
+
+                contentElements.forEach((element) => {
+                    if (element.tagName.toLowerCase() === "p") {
+                        paragraphs.push({ type: "p", content: element.textContent });
+                    } else if (element.tagName.toLowerCase() === "h3") {
+                        paragraphs.push({ type: "h3", content: element.textContent });
+                    } else if (!firstImageProcessed) {
+                        firstImageProcessed = true;
+                    } else if (element.tagName.toLowerCase() === "figure") {
+                        // If a figure is found, associate the image source with the last paragraph
+                        const assImgSrs = element.querySelector("img").getAttribute("src");
+                        paragraphs.push({ type: "img", content: assImgSrs });
+
+                    }
+                });
                 const imgSrc = doc.querySelector('img').getAttribute('src');
 
                 setPost({
                     ...requiredPost,
-                    content,
+                    content: paragraphs,
                     imgSrc
                 })
             })
@@ -62,6 +103,8 @@ export default function SingleBlogPost1() {
                 console.error("Error fetching RSS feed:", error);
             });
     }, []);
+
+    console.log(post)
 
     const validImage = (str) => {
         const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"]; // Add more extensions if needed
@@ -107,7 +150,24 @@ export default function SingleBlogPost1() {
                                     : 'Random'}</Category>
                                 <CreationDate>{post?.pubDate ? formatDate(post?.pubDate) : ''}</CreationDate>
                                 <Title>{post?.title ? toTitleCase(post?.title) : ''}</Title>
-                                <Description>{post?.content ? post?.content : 'Could not load the blog'}</Description>
+                                {post?.content?.map((item, itemIndex) => {
+                                    if (item.type === "h3") {
+                                        // Render heading
+                                        return <Title key={itemIndex}>{item.content}</Title>;
+                                    } else if (item.type === "p") {
+                                        // Render paragraph
+                                        return <Description key={itemIndex}>{item.content}</Description>
+                                    }
+                                    else if (item.type === "img") {
+                                        // Render paragraph
+                                        return <SecImageContainer key={itemIndex}>
+                                            <SecImage imageSrc={item.content} />
+                                        </SecImageContainer>
+
+                                    }
+                                    return null; // Ignore other types
+                                })}
+                                {/* <Description>{post?.content ? post?.content : 'Could not load the blog'}</Description> */}
                             </Info>
                         </SinglePost>
                     </ContentWithPaddingXl>

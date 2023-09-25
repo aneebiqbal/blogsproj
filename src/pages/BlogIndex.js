@@ -140,28 +140,33 @@ export default ({
           <HeadingRow>
             <Heading>{headingText}</Heading>
           </HeadingRow>
-          <Posts>
-            {posts.slice(0, visible).map((post, index) => (
-              <PostContainer key={index} featured={post?.isFeatured}>
-                <Link to={`/blogs/${formatDateTime(post?.pubDate)}`}>
-                  <Post className="group">
-                    <Image imageSrc={validImage(post?.imgSrc) ? post?.imgSrc : EmptyImage} />
-                    <Info>
-                      <Category>{post?.categories?.length !== 0 ? post?.categories[0] : 'Random'}</Category>
-                      <CreationDate>{formatDate(post?.pubDate)}</CreationDate>
-                      <Title>{post?.title ? toTitleCase(post?.title) : ''}</Title>
-                      {post?.isFeatured && post?.content && <Description>{truncateText(post.content, 300)}</Description>}
-                    </Info>
-                  </Post>
-                </Link>
-              </PostContainer>
-            ))}
-          </Posts>
-          {visible < posts.length && (
-            <ButtonContainer>
-              <LoadMoreButton onClick={onLoadMoreClick}>Load More</LoadMoreButton>
-            </ButtonContainer>
-          )}
+          {posts ?
+            <>
+              <Posts>
+                {posts.slice(0, visible).map((post, index) => (
+                  <PostContainer key={index} featured={post?.isFeatured}>
+                    <Link to={`/blogs/${formatDateTime(post?.pubDate)}`}>
+                      <Post className="group">
+                        <Image imageSrc={validImage(post?.imgSrc) ? post?.imgSrc : EmptyImage} />
+                        <Info>
+                          <Category>{post?.categories?.length !== 0 ? post?.categories[0] : 'Random'}</Category>
+                          <CreationDate>{formatDate(post?.pubDate)}</CreationDate>
+                          <Title>{post?.title ? toTitleCase(post?.title) : ''}</Title>
+                          {post?.isFeatured && post?.content && <Description>{truncateText(post.content, 300)}</Description>}
+                        </Info>
+                      </Post>
+                    </Link>
+                  </PostContainer>
+                ))}
+              </Posts>
+              {visible < posts.length && (
+                <ButtonContainer>
+                  <LoadMoreButton onClick={onLoadMoreClick}>Load More</LoadMoreButton>
+                </ButtonContainer>
+              )}
+            </>
+            : null}
+
         </ContentWithPaddingXl>
       </Container>
       <Footer />
