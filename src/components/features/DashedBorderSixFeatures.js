@@ -28,9 +28,9 @@ const Column = styled.div`
 `;
 
 const Card = styled.div`
-  ${tw`flex flex-col mx-auto max-w-xs items-center px-6 py-10 border-2 border-dashed border-primary-500 rounded-lg mt-12`}
+  ${tw`flex flex-col mx-auto max-w-xs items-center px-6 py-10 border-2 border-dashed border-black rounded-lg mt-12`}
   .imageContainer {
-    ${tw`border-2 border-primary-500 text-center rounded-full p-6 flex-shrink-0 relative`}
+    ${tw`border-2 border-black text-center rounded-full p-6 flex-shrink-0 relative`}
     img {
       ${tw`w-8 h-8`}
     }
@@ -41,7 +41,7 @@ const Card = styled.div`
   }
 
   .title {
-    ${tw`mt-2 font-bold text-xl leading-none text-primary-500`}
+    ${tw`mt-2 font-bold text-xl leading-none text-black`}
   }
 
   .description {
@@ -68,17 +68,17 @@ export default () => {
       title: "Ads Management",
       description: "We create and manage ads that you need, from creation to deployment. Lorem ipsum donor sit amet consicou."
     },
-    { imageSrc: SupportIconImage, title: "Video Marketing" },
-    { imageSrc: CustomizeIconImage, title: "Customer Relation" },
-    { imageSrc: ReliableIconImage, title: "Product Outreach" },
-    { imageSrc: FastIconImage, title: "PR Campaign" },
-    { imageSrc: SimpleIconImage, title: "Product Expansion" }
+    { imageSrc: SupportIconImage, title: "Application Secuirty" },
+    { imageSrc: CustomizeIconImage, title: "Managed SOC" },
+    { imageSrc: ReliableIconImage, title: "Risk Assessment and Compliance" },
+    { imageSrc: FastIconImage, title: "Penetration Testing" },
+    { imageSrc: SimpleIconImage, title: "Security Awareness and Phishing Trainings" }
   ];
 
   return (
     <Container>
       <ThreeColumnContainer>
-        <Heading>Our Professional <span tw="text-primary-500">Services</span></Heading>
+        <Heading>Our Professional <span tw="text-black">Services</span></Heading>
         {cards.map((card, i) => (
           <Column key={i}>
             <Card>

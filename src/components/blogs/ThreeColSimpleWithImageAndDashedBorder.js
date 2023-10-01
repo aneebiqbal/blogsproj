@@ -30,7 +30,7 @@ const Image = styled.div((props) => [
   tw`bg-cover h-80 lg:h-64 rounded rounded-b-none`,
 ]);
 
-const Details = tw.div`p-6 rounded border-2 border-t-0 rounded-t-none border-dashed border-primary-100 flex-1 flex flex-col items-center text-center lg:block lg:text-left`;
+const Details = tw.div`p-6 rounded border-2 border-t-0 rounded-t-none border-dashed border-black flex-1 flex flex-col items-center text-center lg:block lg:text-left`;
 const MetaContainer = tw.div`flex items-center`;
 const Meta = styled.div`
   ${tw`text-secondary-100 font-medium text-sm flex items-center leading-none mr-6 last:mr-0`}
@@ -61,7 +61,7 @@ export default ({
   subheading = "Blogs",
   heading = (
     <>
-      We Love <span tw="text-primary-500">Writing.</span>
+      We Love <span tw="text-black">Writing.</span>
     </>
   ),
   description = "Some amazing blog posts that are written by even more amazing people.",
